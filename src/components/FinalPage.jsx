@@ -19,6 +19,11 @@ const FinalPage = ({ answerResults }) => {
     header: {
       textAlign: "center",
     },
+    completionSymbolsBlock: {
+      display: "flex",
+      justifyContent: "center",
+      gap: "10px",
+    },
   };
 
   return (
@@ -32,6 +37,15 @@ const FinalPage = ({ answerResults }) => {
           color={colors[index % colors.length]}
         />
       ))}
+      <div style={styles.completionSymbolsBlock}>
+        {progressBarData.map((item, index) => (
+          <CompletionSymbol
+            key={index}
+            progress={item.progress}
+            color={colors[index % colors.length]}
+          />
+        ))}
+      </div>
     </div>
   );
 };
@@ -39,7 +53,6 @@ const FinalPage = ({ answerResults }) => {
 export default FinalPage;
 
 const FinalProgressBar = ({ title, progress, color }) => {
-  console.log(color);
   const styles = {
     container: {
       marginBottom: "20px",
@@ -71,7 +84,7 @@ const FinalProgressBar = ({ title, progress, color }) => {
     <div style={styles.container}>
       <div style={styles.title}>
         <p>{title}</p>
-        <p>{progress}%</p>
+        <p>{Math.round(progress)}%</p>
       </div>
       <div style={styles.barContainer}>
         <div
@@ -83,4 +96,25 @@ const FinalProgressBar = ({ title, progress, color }) => {
       </div>
     </div>
   );
+};
+
+const CompletionSymbol = ({ progress, color }) => {
+  const getCompletionSymbol = (progress) => {
+    if (progress === 100) {
+      return "✓";
+    } else if (progress > 0) {
+      return "•";
+    } else {
+      return "✕";
+    }
+  };
+
+  const styles = {
+    completionSymbol: {
+      color: color,
+      fontSize: "30px",
+    },
+  };
+
+  return <p style={styles.completionSymbol}>{getCompletionSymbol(progress)}</p>;
 };
