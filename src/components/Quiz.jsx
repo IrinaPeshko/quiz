@@ -142,7 +142,7 @@ const Quiz = () => {
 
   const renderItem = () => {
     if (quizFinished) {
-      return <FinalProgressBar answerResults={answerResults} />;
+      return <FinalProgressBar answerResults={answerResults} />
     } else {
       const item = questions[currentGroupIndex][currentQuestionIndex];
       if (item.type === "question") {
