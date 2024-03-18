@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 
-
-
 const LoadingPage = ({ answerResults, setIsLoading }) => {
   const animationDuration = 7000;
   const [animatedProgress, setAnimatedProgress] = useState(
@@ -12,13 +10,11 @@ const LoadingPage = ({ answerResults, setIsLoading }) => {
       setTimeout(() => {
         setAnimatedProgress((prev) => {
           const newProgress = [...prev];
-          console.log(newProgress);
-          newProgress[index] = calculateProgress(groupResults);
-          console.log(newProgress[index]);
+          newProgress[index] = 100;
           if (index === answerResults.length - 1) {
             setTimeout(() => {
               setIsLoading(false);
-            }, animationDuration+ 700);
+            }, animationDuration + 700);
           }
           return newProgress;
         });
@@ -26,26 +22,20 @@ const LoadingPage = ({ answerResults, setIsLoading }) => {
     });
   }, [answerResults]);
 
-  const calculateProgress = (results) => {
-    const correctAnswers = results.filter((result) => {
-      if (result || result === null) {
-        return true;
-      }
-    }).length;
-    const totalQuestions = results.length;
-    return (correctAnswers / totalQuestions) * 100;
+  const styles = {
+    header: {
+      textAlign: "center",
+    },
   };
-  const progressBarData = answerResults.map((groupResults, index) => ({
-    title: `Group ${index + 1}`,
-    progress: calculateProgress(groupResults),
-  }));
-
   return (
     <div>
-      {progressBarData.map((item, index) => (
+      <h1 style={styles.header}>
+        Your responses are being processed. Please wait.
+      </h1>
+      {answerResults.map((item, index) => (
         <LoadingProgressBar
           key={index}
-          title={item.title}
+          title={`Group ${index + 1}`}
           progress={animatedProgress[index]}
           animationDuration={animationDuration}
         />
@@ -108,7 +98,7 @@ const LoadingProgressBar = ({ title, progress, animationDuration }) => {
       borderRadius: "5px",
       backgroundColor: currentProgress === 100 ? "#6200ee" : "#6200ea",
       width: `${currentProgress}%`,
-      transition: "width 7s ease-in-out",
+      transition: `width ${animationDuration}ms ease-in-out`,
     },
   };
 

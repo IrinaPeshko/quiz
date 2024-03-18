@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import LoadingPage from "./LoadingPage";
+import FinalPage from "./FinalPage"
 import { questions } from "../data/Questions";
 
 const Quiz = () => {
@@ -147,7 +148,7 @@ const Quiz = () => {
     if (quizFinished && isLoading) {
       return <LoadingPage answerResults={answerResults} setIsLoading={setIsLoading}/>
     } else if(quizFinished && !isLoading) {
-      <p>Hello</p>
+     return <FinalPage answerResults={answerResults}/>
     }else{
       const item = questions[currentGroupIndex][currentQuestionIndex];
       if (item.type === "question") {
