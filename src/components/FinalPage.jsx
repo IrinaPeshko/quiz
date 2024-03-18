@@ -1,4 +1,4 @@
-const FinalPage = ({ answerResults }) => {
+const FinalPage = ({ answerResults, onRetry }) => {
   const colors = ["#E0B0FF", "#ADD8E6", "#FFB6C1"];
 
   const calculateProgress = (results) => {
@@ -10,15 +10,21 @@ const FinalPage = ({ answerResults }) => {
     const totalQuestions = results.length;
     return (correctAnswers / totalQuestions) * 100;
   };
+
   const progressBarData = answerResults.map((groupResults, index) => ({
     title: `Group ${index + 1}`,
     progress: calculateProgress(groupResults),
   }));
 
+  const handleRetryClick = () => {
+    onRetry();
+  };
+
   const styles = {
     header: {
       textAlign: "center",
     },
+
     completionSymbolsBlock: {
       display: "flex",
       justifyContent: "center",
@@ -46,11 +52,10 @@ const FinalPage = ({ answerResults }) => {
           />
         ))}
       </div>
+      <button onClick={handleRetryClick}>Try Again</button>
     </div>
   );
 };
-
-export default FinalPage;
 
 const FinalProgressBar = ({ title, progress, color }) => {
   const styles = {
@@ -118,3 +123,5 @@ const CompletionSymbol = ({ progress, color }) => {
 
   return <p style={styles.completionSymbol}>{getCompletionSymbol(progress)}</p>;
 };
+
+export default FinalPage;

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import LoadingPage from "./LoadingPage";
-import FinalPage from "./FinalPage"
+import FinalPage from "./FinalPage";
 import { questions } from "../data/Questions";
 
 const Quiz = () => {
@@ -8,7 +8,7 @@ const Quiz = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState({});
   const [quizFinished, setQuizFinished] = useState(false);
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false);
   const [answerResults, setAnswerResults] = useState(
     questions.map((group) => group.map(() => null))
   );
@@ -30,6 +30,7 @@ const Quiz = () => {
 
     const updatedSegmentProgress = [...segmentProgress];
     const nextQuestionIndex = currentQuestionIndex + 1;
+
     if (nextQuestionIndex < questions[currentGroupIndex].length) {
       setCurrentQuestionIndex(nextQuestionIndex);
       updatedSegmentProgress[currentGroupIndex] =
@@ -43,6 +44,7 @@ const Quiz = () => {
       setQuizFinished(true);
       setIsLoading(true);
     }
+
     setSegmentProgress(updatedSegmentProgress);
     const currentQuestion = questions[currentGroupIndex][currentQuestionIndex];
 
@@ -67,9 +69,19 @@ const Quiz = () => {
       updatedSegmentProgress[currentGroupIndex + 1] = 0;
     } else {
       setQuizFinished(true);
-      setIsLoading(true)
+      setIsLoading(true);
     }
     setSegmentProgress(updatedSegmentProgress);
+  };
+
+  const resetQuiz = () => {
+    setCurrentGroupIndex(0);
+    setCurrentQuestionIndex(0);
+    setSelectedAnswers({});
+    setQuizFinished(false);
+    setIsLoading(false);
+    setAnswerResults(questions.map((group) => group.map(() => null)));
+    setSegmentProgress(questions.map(() => 0));
   };
 
   const styles = {
@@ -78,78 +90,61 @@ const Quiz = () => {
       flexDirection: "row",
       marginBottom: "20px",
       padding: "0",
-      gap: "4px", // adds space between elements without needing marginRight
+      gap: "4px",
     },
     progressBarSegment: {
       height: "20px",
       flexGrow: 1,
-      backgroundColor: "#fff", // soft purple
-      borderRadius: "10px", // more rounded corners
+      backgroundColor: "#fff",
+      borderRadius: "10px",
       overflow: "hidden",
     },
     progressBarFill: (progress) => ({
       width: `${progress}%`,
       height: "100%",
-      backgroundColor: "#f4cae0", // soft pink
+      backgroundColor: "#f4cae0",
       transition: "width 0.5s ease-in-out",
-      borderRadius: "10px", // keep the rounded corners when filling
+      borderRadius: "10px",
     }),
     questionContainer: {
       marginBottom: "30px",
-      width: "90%",
-      backgroundColor: "#fff", // white background for cleanliness
+      width: "80vw",
+      maxWidth: "730px",
+      backgroundColor: "#fff",
       padding: "20px",
       color: "#333333",
-      borderRadius: "15px", // rounded corners for a soft look
-      boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)", // subtle shadow for depth
+      borderRadius: "15px",
+      boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
     },
     questionText: {
       fontSize: "20px",
-      fontWeight: "500", // not too bold, keep it soft
-      color: "#333333", // soft dark color for text
+      fontWeight: "500",
+      color: "#333333",
       marginBottom: "15px",
     },
     optionsContainer: {
       display: "flex",
-      flexDirection: "column",
+      flexDirection: "row",
+      justifyContent: "center",
+      gap: "10px",
+      flexWrap: "wrap",
     },
     contentImg: {
       width: "200px",
-    },
-    optionButton: {
-      padding: "15px 25px", // more padding for a larger touch target
-      cursor: "pointer",
-      userSelect: "none",
-      marginTop: "10px",
-      marginRight: "7px",
-
-      border: "none", // no border for a cleaner look
-      borderRadius: "20px", // highly rounded for a softer look
-      background: "#f0e6f6", // matching the progress bar color
-      color: "#333333", // soft dark color for text
-      fontSize: "18px", // larger font for readability
-      fontWeight: "400", // light weight for a softer appearance
-      transition: "background-color 0.3s, transform 0.2s", // smooth transition for interactions
-      outline: "none",
-      "&:hover": {
-        // pseudo-selector for hover state
-        backgroundColor: "#e2d4e6", // a slightly darker pastel for hover interaction
-        transform: "translateY(-2px)", // a subtle lift effect on hover
-        boxShadow: "0 2px 4px rgba(0, 0, 0, 0.2)", // slight shadow on hover for depth
-      },
-      "&:focus": {
-        // pseudo-selector for focus state
-        boxShadow: "0 0 0 2px rgba(244, 202, 224, 0.5)", // soft glow for accessibility
-      },
     },
   };
 
   const renderItem = () => {
     if (quizFinished && isLoading) {
-      return <LoadingPage answerResults={answerResults} setIsLoading={setIsLoading}/>
-    } else if(quizFinished && !isLoading) {
-     return <FinalPage answerResults={answerResults}/>
-    }else{
+      return (
+        <LoadingPage
+          answerResults={answerResults}
+          setIsLoading={setIsLoading}
+        />
+      );
+    } else if (quizFinished && !isLoading) {
+      return <FinalPage answerResults={answerResults} onRetry={resetQuiz} />;
+    } else {
       const item = questions[currentGroupIndex][currentQuestionIndex];
       if (item.type === "question") {
         return renderQuestion(item);
@@ -162,14 +157,10 @@ const Quiz = () => {
   const renderQuestion = (question) => {
     return (
       <div style={styles.questionContainer}>
-        <div>{question.text}</div>
-        <div>
+        <div style={styles.questionText}>{question.text}</div>
+        <div style={styles.optionsContainer}>
           {question.options.map((option, index) => (
-            <button
-              key={index}
-              style={styles.optionButton}
-              onClick={() => handleAnswerOptionClick(option)}
-            >
+            <button key={index} onClick={() => handleAnswerOptionClick(option)}>
               {option}
             </button>
           ))}
@@ -179,7 +170,6 @@ const Quiz = () => {
   };
 
   const renderContent = (content) => {
-    // Render logic for content pages, including next button
     return (
       <div style={styles.questionContainer}>
         <div>{content.title}</div>
@@ -190,9 +180,7 @@ const Quiz = () => {
             alt={content.title}
           />
           <p>{content.text}</p>
-          <button style={styles.optionButton} onClick={handleNextClick}>
-            Next
-          </button>
+          <button onClick={handleNextClick}>Next</button>
         </div>
       </div>
     );
@@ -214,10 +202,7 @@ const Quiz = () => {
             </div>
           ))}
         </div>
-
         {renderItem()}
-
-        {/* You can also add navigation buttons, question counters, etc., here */}
       </div>
     );
   } else {

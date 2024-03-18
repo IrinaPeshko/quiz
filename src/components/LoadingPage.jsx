@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 
 const LoadingPage = ({ answerResults, setIsLoading }) => {
-  const animationDuration = 7000;
+  const animationDuration = 1000;
   const [animatedProgress, setAnimatedProgress] = useState(
     answerResults.map(() => 0)
   );
   useEffect(() => {
-    answerResults.forEach((groupResults, index) => {
+    answerResults.forEach((_element, index) => {
       setTimeout(() => {
         setAnimatedProgress((prev) => {
           const newProgress = [...prev];
