@@ -10,6 +10,7 @@ const questions = [
       type: "question",
       text: "What is the capital of France?",
       options: ["Paris", "London", "Berlin", "Rome"],
+      correctAnswer: "Paris",
     },
     {
       type: "content",
@@ -18,13 +19,12 @@ const questions = [
       image:
         "https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/Flag_of_France_%281794%E2%80%931815%2C_1830%E2%80%931974%29.svg/1200px-Flag_of_France_%281794%E2%80%931815%2C_1830%E2%80%931974%29.svg.png",
     },
-    // { type: "question", text: "What is the capital of France?", options: ["Paris", "London", "Berlin", "Rome"] },
     {
       type: "question",
       text: "Which element has the chemical symbol 'O'?",
       options: ["Oxygen", "Gold", "Iron", "Carbon"],
+      correctAnswer: "Oxygen",
     },
-    // ... more questions for group 1
   ],
   // Group 2
   [
@@ -37,34 +37,37 @@ const questions = [
         "J.K. Rowling",
         "Ernest Hemingway",
       ],
+      correctAnswer: "Shakespeare",
     },
-    // ... more questions for group 2
   ],
-
+  // Group 3
   [
     {
       type: "question",
       text: "What is the largest planet in our Solar System?",
       options: ["Earth", "Jupiter", "Mars", "Venus"],
+      correctAnswer: "Jupiter",
     },
     {
       type: "question",
       text: "What year did World War II end?",
       options: ["1945", "1939", "1918", "1965"],
+      correctAnswer: "1945",
     },
-    // ... more questions for group 2
   ],
-  // ... more groups
 ];
 
 const Quiz = () => {
   const [currentGroupIndex, setCurrentGroupIndex] = useState(0);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState({});
+  const [quizFinished, setQuizFinished] = useState(false);
+  const [answerResults, setAnswerResults] = useState(
+    questions.map((group) => group.map(() => null))
+  );
   const [segmentProgress, setSegmentProgress] = useState(
     questions.map(() => 0)
   );
-  const [quizFinished, setQuizFinished] = useState(false);
 
   const handleAnswerOptionClick = (option) => {
     const questionIndex =
@@ -90,10 +93,16 @@ const Quiz = () => {
       updatedSegmentProgress[currentGroupIndex] = 100;
       updatedSegmentProgress[currentGroupIndex + 1] = 0;
     } else {
-      // Handle the end of the quiz
       setQuizFinished(true);
     }
     setSegmentProgress(updatedSegmentProgress);
+    const currentQuestion = questions[currentGroupIndex][currentQuestionIndex];
+
+    // Checking the correctness of the selected option
+    const isCorrect = option === currentQuestion.correctAnswer;
+    const updatedAnswerResults = [...answerResults];
+    updatedAnswerResults[currentGroupIndex][currentQuestionIndex] = isCorrect;
+    setAnswerResults(updatedAnswerResults);
   };
 
   const handleNextClick = (option) => {
@@ -113,8 +122,6 @@ const Quiz = () => {
     }
     setSegmentProgress(updatedSegmentProgress);
   };
-
-  const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
 
   const styles = {
     progressBarContainer: {
@@ -187,7 +194,7 @@ const Quiz = () => {
 
   const renderItem = () => {
     if (quizFinished) {
-      return <FinalProgressBar />;
+      return <FinalProgressBar answerResults={answerResults} />;
     } else {
       const item = questions[currentGroupIndex][currentQuestionIndex];
       if (item.type === "question") {

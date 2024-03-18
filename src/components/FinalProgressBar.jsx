@@ -39,12 +39,21 @@ const ProgressBar = ({ title, progress }) => {
   );
 };
 
-const FinalProgressBar = () => {
-  const progressBarData = [
-    { title: "Your profile", progress: 100 },
-    { title: "Personality traits", progress: 100 },
-    { title: "Relationship Pattern", progress: 19 },
-  ];
+const FinalProgressBar = ({ answerResults }) => {
+  const calculateProgress = (results) => {
+    const correctAnswers = results.filter((result) => {
+      if (result || result === null) {
+        return true;
+      }
+    }).length;
+    const totalQuestions = results.length;
+    return (correctAnswers / totalQuestions) * 100;
+  };
+
+  const progressBarData = answerResults.map((groupResults, index) => ({
+    title: `Group ${index + 1}`,
+    progress: calculateProgress(groupResults),
+  }));
 
   return (
     <div>
