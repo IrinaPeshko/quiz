@@ -1,1 +1,1 @@
-# quize
+# quiz
