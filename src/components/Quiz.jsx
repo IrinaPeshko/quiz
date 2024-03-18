@@ -1,61 +1,6 @@
 import React, { useState } from "react";
 import FinalProgressBar from "./FinalProgressBar";
-
-// Example questions
-
-const questions = [
-  // Group 1
-  [
-    {
-      type: "question",
-      text: "What is the capital of France?",
-      options: ["Paris", "London", "Berlin", "Rome"],
-      correctAnswer: "Paris",
-    },
-    {
-      type: "content",
-      title: "Introduction to France",
-      text: "France is known for its rich history and cultural heritage.",
-      image:
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/Flag_of_France_%281794%E2%80%931815%2C_1830%E2%80%931974%29.svg/1200px-Flag_of_France_%281794%E2%80%931815%2C_1830%E2%80%931974%29.svg.png",
-    },
-    {
-      type: "question",
-      text: "Which element has the chemical symbol 'O'?",
-      options: ["Oxygen", "Gold", "Iron", "Carbon"],
-      correctAnswer: "Oxygen",
-    },
-  ],
-  // Group 2
-  [
-    {
-      type: "question",
-      text: "Who wrote 'To be, or not to be'?",
-      options: [
-        "Shakespeare",
-        "Charles Dickens",
-        "J.K. Rowling",
-        "Ernest Hemingway",
-      ],
-      correctAnswer: "Shakespeare",
-    },
-  ],
-  // Group 3
-  [
-    {
-      type: "question",
-      text: "What is the largest planet in our Solar System?",
-      options: ["Earth", "Jupiter", "Mars", "Venus"],
-      correctAnswer: "Jupiter",
-    },
-    {
-      type: "question",
-      text: "What year did World War II end?",
-      options: ["1945", "1939", "1918", "1965"],
-      correctAnswer: "1945",
-    },
-  ],
-];
+import { questions } from "../data/Questions";
 
 const Quiz = () => {
   const [currentGroupIndex, setCurrentGroupIndex] = useState(0);
@@ -147,6 +92,7 @@ const Quiz = () => {
     }),
     questionContainer: {
       marginBottom: "30px",
+      width: "90%",
       backgroundColor: "#fff", // white background for cleanliness
       padding: "20px",
       color: "#333333",
@@ -171,6 +117,8 @@ const Quiz = () => {
       cursor: "pointer",
       userSelect: "none",
       marginTop: "10px",
+      marginRight: "7px",
+
       border: "none", // no border for a cleaner look
       borderRadius: "20px", // highly rounded for a softer look
       background: "#f0e6f6", // matching the progress bar color
@@ -244,27 +192,31 @@ const Quiz = () => {
     );
   };
 
-  return (
-    <div>
-      <div style={styles.progressBarContainer}>
-        {segmentProgress.map((progress, index) => (
-          <div
-            key={index}
-            style={{
-              ...styles.progressBarSegment,
-              marginRight: index < segmentProgress.length - 1 ? "4px" : "0",
-            }}
-          >
-            <div style={styles.progressBarFill(progress)}></div>
-          </div>
-        ))}
+  if (!quizFinished) {
+    return (
+      <div>
+        <div style={styles.progressBarContainer}>
+          {segmentProgress.map((progress, index) => (
+            <div
+              key={index}
+              style={{
+                ...styles.progressBarSegment,
+                marginRight: index < segmentProgress.length - 1 ? "4px" : "0",
+              }}
+            >
+              <div style={styles.progressBarFill(progress)}></div>
+            </div>
+          ))}
+        </div>
+
+        {renderItem()}
+
+        {/* You can also add navigation buttons, question counters, etc., here */}
       </div>
-
-      {renderItem()}
-
-      {/* You can also add navigation buttons, question counters, etc., here */}
-    </div>
-  );
+    );
+  } else {
+    return <div> {renderItem()}</div>;
+  }
 };
 
 export default Quiz;

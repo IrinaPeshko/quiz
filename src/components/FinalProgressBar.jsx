@@ -4,6 +4,8 @@ const ProgressBar = ({ title, progress }) => {
   const styles = {
     container: {
       marginBottom: "20px",
+      width: "80vw",
+      maxWidth: "700px"
     },
     title: {
       fontSize: "16px",
