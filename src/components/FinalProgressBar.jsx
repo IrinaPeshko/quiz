@@ -82,7 +82,7 @@ const FinalProgressBar = ({ answerResults }) => {
   );
   useEffect(() => {
     answerResults.forEach((groupResults, index) => {
-      setTimeout(() => {
+      const timer = setTimeout(() => {
         setAnimatedProgress((prev) => {
           const newProgress = [...prev];
           newProgress[index] = calculateProgress(groupResults);
@@ -112,7 +112,7 @@ const FinalProgressBar = ({ answerResults }) => {
           key={index}
           title={item.title}
           progress={animatedProgress[index]}
-          animationDuration
+          animationDuration={animationDuration}
         />
       ))}
     </div>
