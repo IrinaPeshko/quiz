@@ -1,6 +1,62 @@
 import React, { useEffect, useState } from "react";
 
-const ProgressBar = ({ title, progress, animationDuration }) => {
+
+
+const LoadingPage = ({ answerResults, setIsLoading }) => {
+  const animationDuration = 7000;
+  const [animatedProgress, setAnimatedProgress] = useState(
+    answerResults.map(() => 0)
+  );
+  useEffect(() => {
+    answerResults.forEach((groupResults, index) => {
+      setTimeout(() => {
+        setAnimatedProgress((prev) => {
+          const newProgress = [...prev];
+          console.log(newProgress);
+          newProgress[index] = calculateProgress(groupResults);
+          console.log(newProgress[index]);
+          if (index === answerResults.length - 1) {
+            setTimeout(() => {
+              setIsLoading(false);
+            }, animationDuration+ 700);
+          }
+          return newProgress;
+        });
+      }, animationDuration * index);
+    });
+  }, [answerResults]);
+
+  const calculateProgress = (results) => {
+    const correctAnswers = results.filter((result) => {
+      if (result || result === null) {
+        return true;
+      }
+    }).length;
+    const totalQuestions = results.length;
+    return (correctAnswers / totalQuestions) * 100;
+  };
+  const progressBarData = answerResults.map((groupResults, index) => ({
+    title: `Group ${index + 1}`,
+    progress: calculateProgress(groupResults),
+  }));
+
+  return (
+    <div>
+      {progressBarData.map((item, index) => (
+        <LoadingProgressBar
+          key={index}
+          title={item.title}
+          progress={animatedProgress[index]}
+          animationDuration={animationDuration}
+        />
+      ))}
+    </div>
+  );
+};
+
+export default LoadingPage;
+
+const LoadingProgressBar = ({ title, progress, animationDuration }) => {
   const [currentProgress, setCurrentProgress] = useState(0);
   const [displayProgress, setDisplayProgress] = useState(0);
 
@@ -74,49 +130,3 @@ const ProgressBar = ({ title, progress, animationDuration }) => {
     </div>
   );
 };
-
-const FinalProgressBar = ({ answerResults }) => {
-  const animationDuration = 7000;
-  const [animatedProgress, setAnimatedProgress] = useState(
-    answerResults.map(() => 0)
-  );
-  useEffect(() => {
-    answerResults.forEach((groupResults, index) => {
-      const timer = setTimeout(() => {
-        setAnimatedProgress((prev) => {
-          const newProgress = [...prev];
-          newProgress[index] = calculateProgress(groupResults);
-          return newProgress;
-        });
-      }, animationDuration * index);
-    });
-  }, [answerResults]);
-  const calculateProgress = (results) => {
-    const correctAnswers = results.filter((result) => {
-      if (result || result === null) {
-        return true;
-      }
-    }).length;
-    const totalQuestions = results.length;
-    return (correctAnswers / totalQuestions) * 100;
-  };
-  const progressBarData = answerResults.map((groupResults, index) => ({
-    title: `Group ${index + 1}`,
-    progress: calculateProgress(groupResults),
-  }));
-
-  return (
-    <div>
-      {progressBarData.map((item, index) => (
-        <ProgressBar
-          key={index}
-          title={item.title}
-          progress={animatedProgress[index]}
-          animationDuration={animationDuration}
-        />
-      ))}
-    </div>
-  );
-};
-
-export default FinalProgressBar;

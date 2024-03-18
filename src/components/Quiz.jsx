@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import FinalProgressBar from "./FinalProgressBar";
+import LoadingPage from "./LoadingPage";
 import { questions } from "../data/Questions";
 
 const Quiz = () => {
@@ -7,6 +7,7 @@ const Quiz = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState({});
   const [quizFinished, setQuizFinished] = useState(false);
+  const [isLoading, setIsLoading] = useState(false)
   const [answerResults, setAnswerResults] = useState(
     questions.map((group) => group.map(() => null))
   );
@@ -39,6 +40,7 @@ const Quiz = () => {
       updatedSegmentProgress[currentGroupIndex + 1] = 0;
     } else {
       setQuizFinished(true);
+      setIsLoading(true);
     }
     setSegmentProgress(updatedSegmentProgress);
     const currentQuestion = questions[currentGroupIndex][currentQuestionIndex];
@@ -64,6 +66,7 @@ const Quiz = () => {
       updatedSegmentProgress[currentGroupIndex + 1] = 0;
     } else {
       setQuizFinished(true);
+      setIsLoading(true)
     }
     setSegmentProgress(updatedSegmentProgress);
   };
@@ -141,9 +144,11 @@ const Quiz = () => {
   };
 
   const renderItem = () => {
-    if (quizFinished) {
-      return <FinalProgressBar answerResults={answerResults} />
-    } else {
+    if (quizFinished && isLoading) {
+      return <LoadingPage answerResults={answerResults} setIsLoading={setIsLoading}/>
+    } else if(quizFinished && !isLoading) {
+      <p>Hello</p>
+    }else{
       const item = questions[currentGroupIndex][currentQuestionIndex];
       if (item.type === "question") {
         return renderQuestion(item);
