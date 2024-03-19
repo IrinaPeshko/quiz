@@ -73,11 +73,13 @@ const LoadingProgressBar = ({
     let pastTime = 0;
     const timer = setInterval(() => {
       pastTime += 100;
+
       const newProgress = Math.min(
         progress * (pastTime / animationDuration),
         progress
       );
       setDisplayProgress(Math.round(newProgress));
+
       if (pastTime >= animationDuration) {
         clearInterval(timer);
         setIsLoadingArray((prev) => {
@@ -132,13 +134,7 @@ const LoadingProgressBar = ({
         </div>
       </div>
       <div style={styles.barContainer}>
-        <div
-          style={{
-            ...styles.bar,
-            width: `${currentProgress}%`,
-            backgroundColor: progress === 100 ? "#6200ee" : "#6200ea",
-          }}
-        />
+        <div style={styles.bar} />
       </div>
     </div>
   );
