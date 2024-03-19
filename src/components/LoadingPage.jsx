@@ -99,7 +99,7 @@ const LoadingProgressBar = ({
 
   const styles = {
     container: {
-      marginBottom: "20px",
+      margin: "0 auto 20px",
       width: "80vw",
       maxWidth: "700px",
     },
