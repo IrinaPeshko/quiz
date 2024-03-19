@@ -69,22 +69,16 @@ const LoadingProgressBar = ({
   const [displayProgress, setDisplayProgress] = useState(0);
 
   useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      setCurrentProgress(progress);
-    }, 500);
-    return () => clearTimeout(timeoutId);
-  }, [progress]);
-
-  useEffect(() => {
-    const start = Date.now();
+    setCurrentProgress(progress);
+    let pastTime = 0;
     const timer = setInterval(() => {
-      const elapsedTime = Date.now() - start;
+      pastTime += 100;
       const newProgress = Math.min(
-        progress * (elapsedTime / animationDuration),
+        progress * (pastTime / animationDuration),
         progress
       );
       setDisplayProgress(Math.round(newProgress));
-      if (elapsedTime >= animationDuration) {
+      if (pastTime >= animationDuration) {
         clearInterval(timer);
         setIsLoadingArray((prev) => {
           const newLoadingArray = [...prev];
@@ -93,7 +87,6 @@ const LoadingProgressBar = ({
         });
       }
     }, 100);
-
     return () => clearInterval(timer);
   }, [progress]);
 
