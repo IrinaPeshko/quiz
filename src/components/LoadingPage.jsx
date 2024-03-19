@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
 
 const LoadingPage = ({ answerResults, setIsLoading }) => {
-  const animationDuration = 1000;
+  const animationDuration = 5000;
   const [animatedProgress, setAnimatedProgress] = useState(
     answerResults.map(() => 0)
+  );
+  const [isLoadingArray, setIsLoadingArray] = useState(
+    answerResults.map(() => false)
   );
   useEffect(() => {
     answerResults.forEach((_element, index) => {
@@ -17,6 +20,11 @@ const LoadingPage = ({ answerResults, setIsLoading }) => {
             }, animationDuration + 700);
           }
           return newProgress;
+        });
+        setIsLoadingArray((prev) => {
+          const newLoadingArray = [...prev];
+          newLoadingArray[index] = true;
+          return newLoadingArray;
         });
       }, animationDuration * index);
     });
@@ -38,6 +46,9 @@ const LoadingPage = ({ answerResults, setIsLoading }) => {
           title={`Group ${index + 1}`}
           progress={animatedProgress[index]}
           animationDuration={animationDuration}
+          isLoading={isLoadingArray[index]}
+          setIsLoadingArray={setIsLoadingArray}
+          index={index}
         />
       ))}
     </div>
@@ -46,7 +57,14 @@ const LoadingPage = ({ answerResults, setIsLoading }) => {
 
 export default LoadingPage;
 
-const LoadingProgressBar = ({ title, progress, animationDuration }) => {
+const LoadingProgressBar = ({
+  title,
+  progress,
+  animationDuration,
+  isLoading,
+  setIsLoadingArray,
+  index,
+}) => {
   const [currentProgress, setCurrentProgress] = useState(0);
   const [displayProgress, setDisplayProgress] = useState(0);
 
@@ -68,6 +86,11 @@ const LoadingProgressBar = ({ title, progress, animationDuration }) => {
       setDisplayProgress(Math.round(newProgress));
       if (elapsedTime >= animationDuration) {
         clearInterval(timer);
+        setIsLoadingArray((prev) => {
+          const newLoadingArray = [...prev];
+          newLoadingArray[index] = false;
+          return newLoadingArray;
+        });
       }
     }, 100);
 
@@ -100,13 +123,20 @@ const LoadingProgressBar = ({ title, progress, animationDuration }) => {
       width: `${currentProgress}%`,
       transition: `width ${animationDuration}ms ease-in-out`,
     },
+    loadingContainer: {
+      display: "flex",
+      gap: "10px",
+      alineItems: "center",
+    },
   };
 
   return (
     <div style={styles.container}>
       <div style={styles.title}>
         <p>{title}</p>
-        <p>{displayProgress}%</p>
+        <div style={styles.loadingContainer}>
+          {isLoading && <div className="spinner" />} {displayProgress}%
+        </div>
       </div>
       <div style={styles.barContainer}>
         <div

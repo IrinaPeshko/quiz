@@ -16,7 +16,7 @@ const Quiz = () => {
     questions.map(() => 0)
   );
 
-  const handleAnswerOptionClick = (option) => {
+  const handleAnswerOptionClick = (option, e) => {
     const questionIndex =
       currentQuestionIndex +
       questions
@@ -27,6 +27,8 @@ const Quiz = () => {
       ...selectedAnswers,
       [questionIndex]: option,
     });
+
+    e.target.blur();
 
     const updatedSegmentProgress = [...segmentProgress];
     const nextQuestionIndex = currentQuestionIndex + 1;
@@ -160,7 +162,10 @@ const Quiz = () => {
         <div style={styles.questionText}>{question.text}</div>
         <div style={styles.optionsContainer}>
           {question.options.map((option, index) => (
-            <button key={index} onClick={() => handleAnswerOptionClick(option)}>
+            <button
+              key={index}
+              onClick={(e) => handleAnswerOptionClick(option, e)}
+            >
               {option}
             </button>
           ))}

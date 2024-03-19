@@ -34,7 +34,7 @@ const FinalPage = ({ answerResults, onRetry }) => {
 
   return (
     <div>
-      <h1 style={styles.header}>Your result:</h1>
+      <h1 style={styles.header}>Your result</h1>
       {progressBarData.map((item, index) => (
         <FinalProgressBar
           key={index}
